@@ -61,7 +61,6 @@ argocd login localhost:8080 --username admin --password $ARGOPWD --insecure
 ## Deploy Application
 ```bash
 helm create nginx-helm
-
 ```
 
 ```
@@ -118,6 +117,25 @@ spec:
   project: default
   source:
     path: nginx
+    repoURL: https://github.com/erikorigoss/argocd-workshop.git
+    targetRevision: HEAD
+EOF
+```
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-helm
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: nginx-helm
+  source:
+    path: nginx-helm
     repoURL: https://github.com/erikorigoss/argocd-workshop.git
     targetRevision: HEAD
 EOF
